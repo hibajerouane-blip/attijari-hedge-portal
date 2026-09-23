@@ -12,7 +12,11 @@ import {
 import type { FxPair } from "@/lib/constants";
 import { DEFAULT_RATES, foreignRate, defaultVol } from "@/lib/constants";
 import type { Side } from "@/lib/pricing/tunnel";
-import { formatFx, formatMad, formatPct } from "@/lib/format";
+import { formatFx, formatMad, formatPct, formatNumber } from "@/lib/format";
+
+function round2(n: number) {
+  return Math.round(n * 100) / 100;
+}
 
 export default function SimulateurPage() {
   const [pair, setPair] = useState<FxPair>("EURMAD");
@@ -20,28 +24,33 @@ export default function SimulateurPage() {
   const [notionalFx, setNotionalFx] = useState(1_000_000);
   const [days, setDays] = useState(90);
   const [spot, setSpot] = useState(10.92);
-  const [rDom, setRDom] = useState(DEFAULT_RATES.rMad * 100);
-  const [rFor, setRFor] = useState(DEFAULT_RATES.rEur * 100);
-  const [vol, setVol] = useState(DEFAULT_RATES.volEur * 100);
+  // Desk params — kept in background, not shown as client fields
+  const [rDom, setRDom] = useState<number>(DEFAULT_RATES.rMad);
+  const [rFor, setRFor] = useState<number>(DEFAULT_RATES.rEur);
+  const [vol, setVol] = useState<number>(DEFAULT_RATES.volEur);
   const [shockPct, setShockPct] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const loadMarket = useCallback(async (p: FxPair) => {
     const res = await fetch(`/api/market/${p}`);
     const data = await res.json();
     if (!data.error) {
-      setSpot(data.spot);
-      setRDom(data.rDom * 100);
-      setRFor(data.rFor * 100);
-      setVol(data.vol * 100);
+      setSpot(Number(data.spot));
+      if (typeof data.rDom === "number") setRDom(data.rDom);
+      if (typeof data.rFor === "number") setRFor(data.rFor);
+      if (typeof data.vol === "number") setVol(data.vol);
+    } else {
+      setRFor(foreignRate(p));
+      setVol(defaultVol(p));
     }
     setLoaded(true);
   }, []);
 
   useEffect(() => {
+    setRFor(foreignRate(pair));
+    setVol(defaultVol(pair));
     loadMarket(pair);
-    setRFor(foreignRate(pair) * 100);
-    setVol(defaultVol(pair) * 100);
   }, [pair, loadMarket]);
 
   const scenarioST = useMemo(
@@ -56,9 +65,9 @@ export default function SimulateurPage() {
       notionalFx,
       days,
       spot,
-      rDom: rDom / 100,
-      rFor: rFor / 100,
-      vol: vol / 100,
+      rDom,
+      rFor,
+      vol,
     }),
     [pair, side, notionalFx, days, spot, rDom, rFor, vol]
   );
@@ -75,48 +84,63 @@ export default function SimulateurPage() {
     [input, scenarioST]
   );
 
+  const fxLabel = pair === "EURMAD" ? "EUR" : "USD";
+  const shockHint =
+    shockPct === 0
+      ? "Cours inchangé par rapport à aujourd’hui"
+      : shockPct > 0
+        ? side === "importer"
+          ? "La devise étrangère devient plus chère en MAD (défavorable à l’importateur)"
+          : "La devise étrangère devient plus chère en MAD (favorable à l’exportateur)"
+        : side === "importer"
+          ? "La devise étrangère devient moins chère en MAD (favorable à l’importateur)"
+          : "La devise étrangère devient moins chère en MAD (défavorable à l’exportateur)";
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold text-bank-900">
-          Simulateur P&amp;L
+          Simulateur
         </h1>
-        <p className="mt-1 text-sm text-bank-500">
-          Comparez Forward, option vanilla, tunnel, futures et l&apos;exposition
-          non couverte sous un scénario de spot futur.
+        <p className="mt-1 max-w-2xl text-sm text-bank-500">
+          Décrivez votre besoin en devises, choisissez un scénario de cours, et
+          comparez ce que chaque solution de couverture vous apporterait — face
+          au cas sans couverture.
         </p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-12">
         <aside className="card space-y-4 p-5 lg:col-span-4">
-          <h2 className="text-sm font-semibold text-bank-800">Paramètres</h2>
+          <h2 className="text-sm font-semibold text-bank-800">
+            Votre besoin
+          </h2>
 
           <div>
-            <label className="label">Paire</label>
+            <label className="label">Devise</label>
             <select
               className="field"
               value={pair}
               onChange={(e) => setPair(e.target.value as FxPair)}
             >
-              <option value="EURMAD">EUR/MAD</option>
-              <option value="USDMAD">USD/MAD</option>
+              <option value="EURMAD">Euro (EUR / MAD)</option>
+              <option value="USDMAD">Dollar (USD / MAD)</option>
             </select>
           </div>
 
           <div>
-            <label className="label">Profil</label>
+            <label className="label">Votre situation</label>
             <div className="grid grid-cols-2 gap-2">
               {(
                 [
-                  ["importer", "Importateur"],
-                  ["exporter", "Exportateur"],
+                  ["importer", "J’importe (j’achète la devise)"],
+                  ["exporter", "J’exporte (je vends la devise)"],
                 ] as const
               ).map(([v, l]) => (
                 <button
                   key={v}
                   type="button"
                   onClick={() => setSide(v)}
-                  className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${
+                  className={`rounded-lg border px-3 py-2 text-left text-xs font-medium leading-snug transition sm:text-sm ${
                     side === v
                       ? "border-bank-800 bg-bank-800 text-white"
                       : "border-bank-200 bg-white text-bank-700 hover:bg-bank-50"
@@ -129,7 +153,9 @@ export default function SimulateurPage() {
           </div>
 
           <div>
-            <label className="label">Notionnel (devise étrangère)</label>
+            <label className="label">
+              Montant en {fxLabel}
+            </label>
             <input
               className="field font-mono"
               type="number"
@@ -138,10 +164,13 @@ export default function SimulateurPage() {
               value={notionalFx}
               onChange={(e) => setNotionalFx(Number(e.target.value))}
             />
+            <p className="mt-1 text-[11px] text-bank-400">
+              Ex. {formatNumber(1_000_000)} {fxLabel} à couvrir
+            </p>
           </div>
 
           <div>
-            <label className="label">Horizon (jours)</label>
+            <label className="label">Échéance (dans combien de jours ?)</label>
             <input
               className="field"
               type="number"
@@ -153,53 +182,38 @@ export default function SimulateurPage() {
           </div>
 
           <div>
-            <label className="label">Spot actuel</label>
-            <input
-              className="field font-mono"
-              type="number"
-              step={0.0001}
-              value={spot}
-              onChange={(e) => setSpot(Number(e.target.value))}
-            />
-          </div>
-
-          <div className="grid grid-cols-3 gap-2">
-            <div>
-              <label className="label">r MAD %</label>
-              <input
-                className="field"
-                type="number"
-                step={0.05}
-                value={rDom}
-                onChange={(e) => setRDom(Number(e.target.value))}
-              />
+            <label className="label">Cours actuel du marché</label>
+            <div className="field flex items-center justify-between bg-bank-50 font-mono text-bank-900">
+              <span>{formatFx(spot)}</span>
+              <span className="text-[10px] font-sans font-medium uppercase tracking-wide text-bank-400">
+                MAD / {fxLabel}
+              </span>
             </div>
-            <div>
-              <label className="label">r FX %</label>
+            <p className="mt-1 text-[11px] text-bank-400">
+              Mis à jour depuis le marché (modifiable ci-dessous si besoin).
+            </p>
+            {showAdvanced && (
               <input
-                className="field"
+                className="field mt-2 font-mono"
                 type="number"
-                step={0.05}
-                value={rFor}
-                onChange={(e) => setRFor(Number(e.target.value))}
+                step={0.0001}
+                value={spot}
+                onChange={(e) => setSpot(Number(e.target.value))}
               />
-            </div>
-            <div>
-              <label className="label">Vol %</label>
-              <input
-                className="field"
-                type="number"
-                step={0.1}
-                value={vol}
-                onChange={(e) => setVol(Number(e.target.value))}
-              />
-            </div>
+            )}
           </div>
 
           <div>
             <label className="label">
-              Choc de spot : {formatPct(shockPct)} → {formatFx(scenarioST)}
+              Et si le cours bouge de {formatPct(round2(shockPct))} ?
             </label>
+            <p className="mb-2 text-[11px] leading-relaxed text-bank-500">
+              Nouveau cours envisagé :{" "}
+              <strong className="font-mono text-bank-800">
+                {formatFx(scenarioST)}
+              </strong>{" "}
+              MAD / {fxLabel}
+            </p>
             <input
               type="range"
               min={-12}
@@ -214,42 +228,113 @@ export default function SimulateurPage() {
               <span>0</span>
               <span>+12 %</span>
             </div>
+            <p className="mt-2 text-[11px] leading-relaxed text-bank-500">
+              {shockHint}
+            </p>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setShowAdvanced((v) => !v)}
+            className="text-left text-[11px] font-medium text-bank-500 underline-offset-2 hover:text-bank-800 hover:underline"
+          >
+            {showAdvanced
+              ? "Masquer les réglages avancés"
+              : "Réglages avancés (desk)"}
+          </button>
+
+          {showAdvanced && (
+            <div className="space-y-3 rounded-lg border border-bank-100 bg-bank-50/80 p-3">
+              <p className="text-[11px] text-bank-500">
+                Paramètres utilisés en coulisse pour le calcul. Un client n’a
+                en général pas besoin de les modifier.
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="label">Taux MAD %</label>
+                  <input
+                    className="field"
+                    type="number"
+                    step={0.05}
+                    value={round2(rDom * 100)}
+                    onChange={(e) =>
+                      setRDom(round2(Number(e.target.value)) / 100)
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="label">Taux {fxLabel} %</label>
+                  <input
+                    className="field"
+                    type="number"
+                    step={0.05}
+                    value={round2(rFor * 100)}
+                    onChange={(e) =>
+                      setRFor(round2(Number(e.target.value)) / 100)
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="label">Volatilité %</label>
+                  <input
+                    className="field"
+                    type="number"
+                    step={0.1}
+                    value={round2(vol * 100)}
+                    onChange={(e) =>
+                      setVol(round2(Number(e.target.value)) / 100)
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
           {loaded && (
             <div className="rounded-lg bg-bank-50 p-3 text-[11px] leading-relaxed text-bank-600">
-              Forward IRP :{" "}
-              <strong className="font-mono">{formatFx(priced.F)}</strong>
-              <br />
-              Futures (basis) :{" "}
-              <strong className="font-mono">{formatFx(priced.fut)}</strong>
-              {" · "}marge ≈{" "}
-              <strong className="font-mono">
-                {formatMad(priced.futMarginMad)}
-              </strong>
-              <br />
-              Strike option ATM :{" "}
-              <strong className="font-mono">{formatFx(priced.K)}</strong>
-              <br />
-              Tunnel [{formatFx(priced.tunnel.kPut)} ;{" "}
-              {formatFx(priced.tunnel.kCall)}] · prime nette{" "}
-              {formatFx(priced.tunnel.netPremium, 6)} MAD/unité
+              <div className="font-semibold text-bank-700">
+                En résumé pour votre besoin
+              </div>
+              <ul className="mt-1.5 list-disc space-y-1 pl-4">
+                <li>
+                  Cours à terme indicatif :{" "}
+                  <strong className="font-mono">{formatFx(priced.F)}</strong>
+                </li>
+                <li>
+                  Protection option (cours de référence) :{" "}
+                  <strong className="font-mono">{formatFx(priced.K)}</strong>
+                </li>
+                <li>
+                  Tunnel entre{" "}
+                  <strong className="font-mono">
+                    {formatFx(priced.tunnel.kPut)}
+                  </strong>{" "}
+                  et{" "}
+                  <strong className="font-mono">
+                    {formatFx(priced.tunnel.kCall)}
+                  </strong>
+                </li>
+              </ul>
             </div>
           )}
         </aside>
 
         <section className="space-y-5 lg:col-span-8">
           <div className="card p-5">
-            <h2 className="mb-3 text-sm font-semibold text-bank-800">
-              Courbes P&amp;L vs spot futur
+            <h2 className="mb-1 text-sm font-semibold text-bank-800">
+              Résultat selon le cours futur
             </h2>
+            <p className="mb-3 text-[11px] text-bank-500">
+              Chaque courbe montre le gain ou la perte en MAD par rapport à ne
+              rien couvrir, selon le cours le jour J.
+            </p>
             <PnLChart data={curve} spotRef={spot} />
           </div>
 
           <div className="card overflow-hidden">
             <div className="border-b border-bank-100 px-5 py-3">
               <h2 className="text-sm font-semibold text-bank-800">
-                Classement au scénario ({formatFx(scenarioST)})
+                Comparaison au scénario ({formatFx(scenarioST)} MAD / {fxLabel})
               </h2>
             </div>
             <div className="overflow-x-auto">
@@ -257,10 +342,10 @@ export default function SimulateurPage() {
                 <thead className="bg-bank-50 text-xs uppercase text-bank-500">
                   <tr>
                     <th className="px-5 py-2.5">#</th>
-                    <th className="px-5 py-2.5">Instrument</th>
-                    <th className="px-5 py-2.5">Taux effectif</th>
-                    <th className="px-5 py-2.5">Prime / u.</th>
-                    <th className="px-5 py-2.5 text-right">P&amp;L MAD</th>
+                    <th className="px-5 py-2.5">Solution</th>
+                    <th className="px-5 py-2.5">Cours effectif</th>
+                    <th className="px-5 py-2.5">Coût de protection</th>
+                    <th className="px-5 py-2.5 text-right">Résultat (MAD)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -297,7 +382,7 @@ export default function SimulateurPage() {
 
           <div className="rounded-xl border border-brand-orange/40 bg-gradient-to-r from-brand-bar to-brand-ink p-5 text-white">
             <div className="text-xs font-semibold uppercase tracking-wider text-brand-orange">
-              Recommandation desk
+              Ce que le desk vous recommande
             </div>
             <p className="mt-2 text-sm leading-relaxed text-brand-light/90">
               {reco.text}

@@ -229,7 +229,7 @@ export function buildPnLCurve(
   return points;
 }
 
-/** Texte de recommandation commerciale. */
+/** Texte de recommandation — langage client. */
 export function recommend(
   input: SimInput,
   scenarioST: number
@@ -238,13 +238,11 @@ export function recommend(
   const rows = all.filter((r) => r.id !== "unhedged");
   const best = rows.reduce((a, b) => (a.pnl >= b.pnl ? a : b));
   const unhedged = all.find((r) => r.id === "unhedged")!;
-  const fwd = all.find((r) => r.id === "forward")!;
   const opt = all.find((r) => r.id === "call")!;
-  const tun = all.find((r) => r.id === "tunnel")!;
-  const fut = all.find((r) => r.id === "futures")!;
   const shock = ((scenarioST - input.spot) / input.spot) * 100;
-  const sideFr = input.side === "importer" ? "importateur" : "exportateur";
   const pairLabel = input.pair === "EURMAD" ? "EUR/MAD" : "USD/MAD";
+  const amount = new Intl.NumberFormat("fr-MA").format(input.notionalFx);
+  const fx = input.pair === "EURMAD" ? "EUR" : "USD";
   const adverse =
     (input.side === "importer" && shock > 1.5) ||
     (input.side === "exporter" && shock < -1.5);
@@ -254,43 +252,39 @@ export function recommend(
 
   const deltaVsUnhedged = best.pnl - unhedged.pnl;
 
-  let text = `Scénario ${shock >= 0 ? "+" : ""}${shock.toFixed(1)} % sur ${pairLabel} `;
-  text += `(spot futur ${scenarioST.toFixed(4)} MAD). Profil ${sideFr}, `;
-  text += `notionnel ${new Intl.NumberFormat("fr-MA").format(input.notionalFx)} FX · ${input.days} j. `;
-  text += `Meilleur P&L couvert : « ${best.name} » (${formatMad(best.pnl)}), `;
-  text += `soit ${deltaVsUnhedged >= 0 ? "+" : ""}${formatMad(deltaVsUnhedged)} vs non couvert (${formatMad(unhedged.pnl)}). `;
+  let text = `Pour ${amount} ${fx} dans ${input.days} jours (${pairLabel}), `;
+  text += `si le cours passe à ${scenarioST.toFixed(4)} (${shock >= 0 ? "+" : ""}${shock.toFixed(1)} %), `;
+  text += `la solution la plus favorable dans ce scénario est « ${best.name} » `;
+  text += `(${formatMad(best.pnl)}), soit ${deltaVsUnhedged >= 0 ? "+" : ""}${formatMad(deltaVsUnhedged)} `;
+  text += `par rapport à ne rien couvrir (${formatMad(unhedged.pnl)}). `;
 
   if (adverse) {
     text +=
       input.side === "importer"
-        ? "La devise s'apprécie : le non couvert paie plus cher. "
-        : "La devise s'affaiblit : le non couvert encaisse moins. ";
+        ? "Sans couverture, vous paieriez plus cher votre devise. "
+        : "Sans couverture, vous encaisseriez moins en dirhams. ";
     if (best.id === "forward" || best.id === "futures") {
       text +=
-        "Un taux fixe (forward OTC ou futures listé) verrouille le budget — " +
-        "le futures intègre un léger basis + coût de marge. ";
+        "Un cours fixé à l’avance (change à terme ou futures) sécurise votre budget. ";
     } else if (best.id === "call") {
       text +=
-        "L'option de protection plafonne le pire cas tout en laissant un upside si le spot revient. ";
+        "L’option vous protège contre le mauvais scénario tout en gardant le bénéfice si le marché s’améliore. ";
     } else {
       text +=
-        "Le tunnel borne le taux dans un corridor sans décaissement de prime nette (upside partiellement cédé). ";
+        "Le tunnel encadre votre cours entre deux bornes, souvent sans payer de prime nette. ";
     }
   } else if (favorable) {
     text +=
-      "Scénario favorable au client non couvert : la couverture « coûte » en coût d'opportunité. ";
-    text += `L'option (${opt.name}) limite ce regret en gardant une partie de l'upside ; `;
-    text += `forward (${formatMad(fwd.pnl)}) et futures (${formatMad(fut.pnl)}) restent plats. `;
-    text += `Tunnel : ${formatMad(tun.pnl)}. `;
+      "Dans ce scénario, ne pas se couvrir serait plus avantageux — c’est le « coût » classique d’une assurance. ";
+    text += `L’option (${opt.name}) limite ce regret en gardant une partie du gain possible. `;
   } else {
     text +=
-      "Scénario calme : privilégier la certitude budgétaire (forward) si la facture est ferme ; ";
+      "Scénario calme : si votre facture est ferme, le change à terme donne de la certitude ; ";
     text +=
-      "sinon tunnel zéro-coût pour un compromis commercial, ou option si la volatilité est élevée et le client accepte la prime. ";
+      "sinon un tunnel peut encadrer le budget sans prime, ou une option si vous acceptez de payer pour rester flexible. ";
   }
 
-  text +=
-    "Rappel : indication desk — ne constitue pas un conseil en investissement.";
+  text += "Indication du desk — à discuter avec votre chargé de clientèle.";
 
   return { bestId: best.id, text };
 }
