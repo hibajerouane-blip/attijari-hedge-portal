@@ -6,7 +6,7 @@ import { buildPnLCurve, priceAllStrategies, type SimInput } from "@/lib/pricing"
 import type { FxPair } from "@/lib/constants";
 import { INSTRUMENT_META, DEFAULT_RATES, foreignRate, defaultVol } from "@/lib/constants";
 import type { Side } from "@/lib/pricing/tunnel";
-import { formatFx } from "@/lib/format";
+import { formatFx, formatMad } from "@/lib/format";
 
 const TOGGLE_KEYS = ["unhedged", "forward", "call", "tunnel", "futures"] as const;
 
@@ -110,10 +110,14 @@ export default function ComparerPage() {
         <PnLChart data={curve} spotRef={spot} visible={visible} />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <MetaCard
-          title="Forward / Futures"
-          body={`Prix IRP ${formatFx(priced.F)} — payoff plat (taux fixe).`}
+          title="Forward OTC"
+          body={`Prix IRP ${formatFx(priced.F)} — payoff plat, sans marge.`}
+        />
+        <MetaCard
+          title="Futures listé"
+          body={`F_fut ${formatFx(priced.fut)} · marge ≈ ${formatMad(priced.futMarginMad)} — plat, distinct du forward.`}
         />
         <MetaCard
           title="Option ATM"

@@ -33,19 +33,25 @@ export default function PnLChart({
   visible?: Partial<Record<string, boolean>>;
 }) {
   return (
-    <div className="h-80 w-full sm:h-96">
+    <div className="h-80 w-full sm:h-[26rem]">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 8, right: 12, left: 8, bottom: 8 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+        <LineChart
+          data={data}
+          margin={{ top: 12, right: 16, left: 4, bottom: 12 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke="#d9eef5" vertical={false} />
           <XAxis
             dataKey="ST"
             tickFormatter={(v) => formatFx(Number(v), 2)}
-            tick={{ fontSize: 11 }}
+            tick={{ fontSize: 11, fill: "#1e566d" }}
+            axisLine={{ stroke: "#b3dde9" }}
+            tickLine={false}
             label={{
-              value: "Spot futur",
+              value: "Spot futur (MAD / FX)",
               position: "insideBottom",
-              offset: -2,
+              offset: -4,
               fontSize: 11,
+              fill: "#64748b",
             }}
           />
           <YAxis
@@ -55,14 +61,26 @@ export default function PnLChart({
                 maximumFractionDigits: 1,
               }).format(Number(v))
             }
-            tick={{ fontSize: 11 }}
-            width={56}
+            tick={{ fontSize: 11, fill: "#1e566d" }}
+            axisLine={false}
+            tickLine={false}
+            width={58}
+            label={{
+              value: "P&L MAD",
+              angle: -90,
+              position: "insideLeft",
+              offset: 8,
+              fontSize: 11,
+              fill: "#64748b",
+            }}
           />
           <Tooltip
             contentStyle={{
               fontSize: 12,
-              borderRadius: 8,
+              borderRadius: 10,
               border: "1px solid #b3dde9",
+              boxShadow: "0 8px 24px rgba(15,39,52,0.1)",
+              background: "#fff",
             }}
             formatter={(value, name) => [
               formatMad(Number(value ?? 0)),
@@ -70,16 +88,19 @@ export default function PnLChart({
             ]}
             labelFormatter={(l) => `Spot ${formatFx(Number(l))}`}
           />
-          <Legend wrapperStyle={{ fontSize: 12 }} />
+          <Legend
+            wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
+            iconType="plainline"
+          />
           {spotRef != null && (
             <ReferenceLine
               x={spotRef}
               stroke="#94a3b8"
               strokeDasharray="4 4"
-              label={{ value: "S0", fontSize: 10, fill: "#64748b" }}
+              label={{ value: "S₀", fontSize: 10, fill: "#64748b" }}
             />
           )}
-          <ReferenceLine y={0} stroke="#cbd5e1" />
+          <ReferenceLine y={0} stroke="#94a3b8" strokeWidth={1} />
           {KEYS.map((k) => {
             if (visible && visible[k.key] === false) return null;
             return (
@@ -89,9 +110,16 @@ export default function PnLChart({
                 dataKey={k.key}
                 name={k.name}
                 stroke={k.color}
-                strokeWidth={k.key === "unhedged" ? 1.5 : 2}
-                strokeDasharray={k.key === "unhedged" ? "6 4" : undefined}
+                strokeWidth={k.key === "unhedged" ? 1.5 : 2.25}
+                strokeDasharray={
+                  k.key === "unhedged"
+                    ? "6 4"
+                    : k.key === "futures"
+                      ? "2 3"
+                      : undefined
+                }
                 dot={false}
+                activeDot={{ r: 3 }}
                 isAnimationActive={false}
               />
             );

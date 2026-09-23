@@ -144,9 +144,9 @@ export default function MarchePage() {
           </div>
 
           <p className="text-[11px] text-bank-400">
-            Stub BAM : définissez <code className="font-mono">BAM_API_KEY</code>{" "}
-            pour brancher une source officielle (non connectée dans cette démo).
-            API : <code className="font-mono">GET /api/market/{pair}</code>
+            Démo pédagogique stage — données synthétiques. Stub BAM : variable{" "}
+            <code className="font-mono">BAM_API_KEY</code> (non branchée). API :{" "}
+            <code className="font-mono">GET /api/market/{pair}</code>
           </p>
         </>
       )}

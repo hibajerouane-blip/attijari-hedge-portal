@@ -78,7 +78,8 @@ Achat d’une option de protection + vente de l’option opposée ; strikes rech
 
 ### Futures
 
-Pour la démo cash P&L : payoff linéaire équivalent au forward (hors marges / funding).
+Payoff linéaire proche du forward IRP, avec un **basis listé** et un **coût de marge**
+pédagogiques pour distinguer le contrat listé du forward OTC.
 
 ### Baseline
 
@@ -137,6 +138,10 @@ Sur GitLab CI, un job minimal peut exécuter `npm ci && npm run build`.
 | `npm run build` | Build production |
 | `npm start` | Serveur après build |
 | `npm run lint` | ESLint |
+
+## Présentation stage
+
+Voir [`PRESENTATION.md`](./PRESENTATION.md) — script oral ~2 min pour l’encadrante.
 
 ## Auteur
 

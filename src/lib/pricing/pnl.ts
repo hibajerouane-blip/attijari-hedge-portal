@@ -14,7 +14,7 @@
 import { forwardPrice } from "./forward";
 import { gkCall, gkPut, callPayoff, putPayoff } from "./blackScholes";
 import { buildZeroCostTunnel, tunnelEffectiveRate, type Side } from "./tunnel";
-import { futuresPrice } from "./futures";
+import { futuresPrice, futuresMarginCost } from "./futures";
 import type { FxPair } from "../constants";
 
 export interface SimInput {
@@ -107,13 +107,20 @@ export function priceAllStrategies(input: SimInput) {
     rFor: input.rFor,
     T,
   });
+  const futMarginMad = futuresMarginCost({
+    notionalFx: input.notionalFx,
+    spot: input.spot,
+    T,
+    rDom: input.rDom,
+  });
 
-  return { T, F, K, callPrem, putPrem, tunnel, fut };
+  return { T, F, K, callPrem, putPrem, tunnel, fut, futMarginMad };
 }
 
 /** P&L de chaque stratégie à un spot futur donné. */
 export function pnlAtSpot(input: SimInput, ST: number): StrategyPoint[] {
-  const { T, F, K, callPrem, putPrem, tunnel, fut } = priceAllStrategies(input);
+  const { T, F, K, callPrem, putPrem, tunnel, fut, futMarginMad } =
+    priceAllStrategies(input);
   const { side, notionalFx, spot: S0, rDom } = input;
 
   const unhedged = sidePnl(side, notionalFx, S0, ST, 0, T, rDom);
@@ -133,18 +140,67 @@ export function pnlAtSpot(input: SimInput, ST: number): StrategyPoint[] {
     optPremium = putPrem;
     optName = "Put vanilla";
   }
-  const optPnL = sidePnl(side, notionalFx, S0, optEffective, optPremium, T, rDom);
+  const optPnL = sidePnl(
+    side,
+    notionalFx,
+    S0,
+    optEffective,
+    optPremium,
+    T,
+    rDom
+  );
 
   const tunEff = tunnelEffectiveRate(ST, tunnel.kPut, tunnel.kCall);
-  const tunPnL = sidePnl(side, notionalFx, S0, tunEff, tunnel.netPremium, T, rDom);
-  const futPnL = sidePnl(side, notionalFx, S0, fut, 0, T, rDom);
+  const tunPnL = sidePnl(
+    side,
+    notionalFx,
+    S0,
+    tunEff,
+    tunnel.netPremium,
+    T,
+    rDom
+  );
+
+  // Futures : taux listé (basis) + coût de marge / unit FX
+  const futPremPerUnit = futMarginMad / Math.max(notionalFx, 1);
+  const futPnL = sidePnl(side, notionalFx, S0, fut, futPremPerUnit, T, rDom);
 
   return [
-    { id: "unhedged", name: "Non couvert", effectiveRate: ST, premiumPaid: 0, pnl: unhedged },
-    { id: "forward", name: "Forward", effectiveRate: F, premiumPaid: 0, pnl: fwd },
-    { id: "call", name: optName, effectiveRate: optEffective, premiumPaid: optPremium, pnl: optPnL },
-    { id: "tunnel", name: "Tunnel", effectiveRate: tunEff, premiumPaid: tunnel.netPremium, pnl: tunPnL },
-    { id: "futures", name: "Futures", effectiveRate: fut, premiumPaid: 0, pnl: futPnL },
+    {
+      id: "unhedged",
+      name: "Non couvert",
+      effectiveRate: ST,
+      premiumPaid: 0,
+      pnl: unhedged,
+    },
+    {
+      id: "forward",
+      name: "Forward",
+      effectiveRate: F,
+      premiumPaid: 0,
+      pnl: fwd,
+    },
+    {
+      id: "call",
+      name: optName,
+      effectiveRate: optEffective,
+      premiumPaid: optPremium,
+      pnl: optPnL,
+    },
+    {
+      id: "tunnel",
+      name: "Tunnel",
+      effectiveRate: tunEff,
+      premiumPaid: tunnel.netPremium,
+      pnl: tunPnL,
+    },
+    {
+      id: "futures",
+      name: "Futures",
+      effectiveRate: fut,
+      premiumPaid: futPremPerUnit,
+      pnl: futPnL,
+    },
   ];
 }
 
@@ -182,27 +238,59 @@ export function recommend(
   const rows = all.filter((r) => r.id !== "unhedged");
   const best = rows.reduce((a, b) => (a.pnl >= b.pnl ? a : b));
   const unhedged = all.find((r) => r.id === "unhedged")!;
+  const fwd = all.find((r) => r.id === "forward")!;
+  const opt = all.find((r) => r.id === "call")!;
+  const tun = all.find((r) => r.id === "tunnel")!;
+  const fut = all.find((r) => r.id === "futures")!;
   const shock = ((scenarioST - input.spot) / input.spot) * 100;
   const sideFr = input.side === "importer" ? "importateur" : "exportateur";
+  const pairLabel = input.pair === "EURMAD" ? "EUR/MAD" : "USD/MAD";
+  const adverse =
+    (input.side === "importer" && shock > 1.5) ||
+    (input.side === "exporter" && shock < -1.5);
+  const favorable =
+    (input.side === "importer" && shock < -1.5) ||
+    (input.side === "exporter" && shock > 1.5);
 
-  let text = `Scénario ${shock >= 0 ? "+" : ""}${shock.toFixed(1)} % sur ${input.pair} `;
-  text += `(spot futur ${scenarioST.toFixed(4)}). Pour un profil ${sideFr}, `;
-  text += `l'instrument le plus favorable en P&L est « ${best.name} » `;
-  text += `(${formatMad(best.pnl)} vs ${formatMad(unhedged.pnl)} non couvert). `;
+  const deltaVsUnhedged = best.pnl - unhedged.pnl;
 
-  if (input.side === "importer" && shock > 2) {
+  let text = `Scénario ${shock >= 0 ? "+" : ""}${shock.toFixed(1)} % sur ${pairLabel} `;
+  text += `(spot futur ${scenarioST.toFixed(4)} MAD). Profil ${sideFr}, `;
+  text += `notionnel ${new Intl.NumberFormat("fr-MA").format(input.notionalFx)} FX · ${input.days} j. `;
+  text += `Meilleur P&L couvert : « ${best.name} » (${formatMad(best.pnl)}), `;
+  text += `soit ${deltaVsUnhedged >= 0 ? "+" : ""}${formatMad(deltaVsUnhedged)} vs non couvert (${formatMad(unhedged.pnl)}). `;
+
+  if (adverse) {
     text +=
-      "La hausse de la devise étrangère pénalise l'importateur non couvert ; " +
-      "un forward/futures verrouille le coût, tandis qu'un call conserve un upside si le spot redescend.";
-  } else if (input.side === "exporter" && shock < -2) {
+      input.side === "importer"
+        ? "La devise s'apprécie : le non couvert paie plus cher. "
+        : "La devise s'affaiblit : le non couvert encaisse moins. ";
+    if (best.id === "forward" || best.id === "futures") {
+      text +=
+        "Un taux fixe (forward OTC ou futures listé) verrouille le budget — " +
+        "le futures intègre un léger basis + coût de marge. ";
+    } else if (best.id === "call") {
+      text +=
+        "L'option de protection plafonne le pire cas tout en laissant un upside si le spot revient. ";
+    } else {
+      text +=
+        "Le tunnel borne le taux dans un corridor sans décaissement de prime nette (upside partiellement cédé). ";
+    }
+  } else if (favorable) {
     text +=
-      "La baisse du cours pénalise l'exportateur non couvert ; " +
-      "un put ou un tunnel protège le plancher de change.";
+      "Scénario favorable au client non couvert : la couverture « coûte » en coût d'opportunité. ";
+    text += `L'option (${opt.name}) limite ce regret en gardant une partie de l'upside ; `;
+    text += `forward (${formatMad(fwd.pnl)}) et futures (${formatMad(fut.pnl)}) restent plats. `;
+    text += `Tunnel : ${formatMad(tun.pnl)}. `;
   } else {
     text +=
-      "En scénario calme, le forward/futures offre de la certitude budgétaire ; " +
-      "les options et tunnels coûtent une prime (ou cèdent de l'upside) en échange de flexibilité.";
+      "Scénario calme : privilégier la certitude budgétaire (forward) si la facture est ferme ; ";
+    text +=
+      "sinon tunnel zéro-coût pour un compromis commercial, ou option si la volatilité est élevée et le client accepte la prime. ";
   }
+
+  text +=
+    "Rappel : recommandation pédagogique — pas un conseil en investissement.";
 
   return { bestId: best.id, text };
 }

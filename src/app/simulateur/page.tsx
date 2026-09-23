@@ -217,9 +217,16 @@ export default function SimulateurPage() {
           </div>
 
           {loaded && (
-            <div className="rounded-lg bg-bank-50 p-3 text-[11px] text-bank-600">
+            <div className="rounded-lg bg-bank-50 p-3 text-[11px] leading-relaxed text-bank-600">
               Forward IRP :{" "}
               <strong className="font-mono">{formatFx(priced.F)}</strong>
+              <br />
+              Futures (basis) :{" "}
+              <strong className="font-mono">{formatFx(priced.fut)}</strong>
+              {" · "}marge ≈{" "}
+              <strong className="font-mono">
+                {formatMad(priced.futMarginMad)}
+              </strong>
               <br />
               Strike option ATM :{" "}
               <strong className="font-mono">{formatFx(priced.K)}</strong>

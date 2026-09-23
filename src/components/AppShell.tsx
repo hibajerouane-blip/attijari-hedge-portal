@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { DEMO_DISCLAIMER } from "@/lib/constants";
 
 const NAV = [
   { href: "/", label: "Tableau de bord" },
@@ -10,6 +11,7 @@ const NAV = [
   { href: "/simulateur", label: "Simulateur" },
   { href: "/comparer", label: "Comparer" },
   { href: "/marche", label: "Marché" },
+  { href: "/a-propos", label: "À propos" },
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -36,10 +38,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-bank-50 text-bank-950">
+    <div className="flex min-h-screen flex-col bg-bank-50 text-bank-950">
       <header className="border-b border-bank-200/80 bg-bank-950 text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-accent/90 text-sm font-bold tracking-tight">
               HD
             </div>
@@ -51,8 +53,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 Couverture FX — Démo Stage
               </div>
             </div>
-          </div>
-          <nav className="hidden items-center gap-1 md:flex">
+          </Link>
+          <nav className="hidden items-center gap-1 lg:flex">
             {NAV.map((item) => {
               const active =
                 item.href === "/"
@@ -88,7 +90,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </button>
           </div>
         </div>
-        <nav className="flex gap-1 overflow-x-auto border-t border-white/10 px-4 py-2 md:hidden">
+        <nav className="flex gap-1 overflow-x-auto border-t border-white/10 px-4 py-2 lg:hidden">
           {NAV.map((item) => {
             const active =
               item.href === "/"
@@ -108,12 +110,20 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
       </header>
-      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
         {children}
       </main>
-      <footer className="border-t border-bank-200 bg-white/60 py-4 text-center text-[11px] text-bank-500">
-        HedgeDesk Demo — données de démo / référence BAM-like — ne constitue
-        pas un conseil en investissement ni une offre bancaire.
+      <footer className="border-t border-bank-200 bg-white/70 py-5">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-2 px-4 text-center text-[11px] text-bank-500 sm:px-6">
+          <p className="font-medium text-bank-700">{DEMO_DISCLAIMER}</p>
+          <p>
+            HedgeDesk Demo ·{" "}
+            <Link href="/a-propos" className="text-teal-accent hover:underline">
+              À propos
+            </Link>{" "}
+            · EUR/MAD &amp; USD/MAD
+          </p>
+        </div>
       </footer>
     </div>
   );

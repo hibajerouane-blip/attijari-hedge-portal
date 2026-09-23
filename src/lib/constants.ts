@@ -50,13 +50,13 @@ export const INSTRUMENT_META = {
   forward: {
     id: "forward" as const,
     name: "Forward",
-    short: "Change à terme",
+    short: "Change à terme OTC",
     color: "#1e566d",
   },
   call: {
     id: "call" as const,
-    name: "Call vanilla",
-    short: "Option d'achat EUR/USD",
+    name: "Option vanilla",
+    short: "Call (import) / Put (export)",
     color: "#0d9488",
   },
   tunnel: {
@@ -68,9 +68,12 @@ export const INSTRUMENT_META = {
   futures: {
     id: "futures" as const,
     name: "Futures",
-    short: "Contrat à terme MTM",
+    short: "Contrat listé + marge",
     color: "#7c3aed",
   },
 };
 
 export type InstrumentId = keyof typeof INSTRUMENT_META;
+
+export const DEMO_DISCLAIMER =
+  "Démo pédagogique stage — données synthétiques. Ne constitue ni un conseil en investissement ni une offre bancaire.";
