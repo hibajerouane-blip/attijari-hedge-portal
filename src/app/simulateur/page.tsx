@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import PnLChart from "@/components/PnLChart";
+import ScenarioExplorer from "@/components/ScenarioExplorer";
 import {
   buildPnLCurve,
   pnlAtSpot,
@@ -325,17 +326,23 @@ export default function SimulateurPage() {
               Résultat selon le cours futur
             </h2>
             <p className="mb-3 text-[11px] text-bank-500">
-              Chaque courbe montre le gain ou la perte en MAD par rapport à ne
-              rien couvrir, selon le cours le jour J.
+              Chaque courbe montre le gain ou la perte en MAD par rapport à un
+              échange au cours d’aujourd’hui, selon le cours le jour J.
             </p>
             <PnLChart data={curve} spotRef={spot} />
           </div>
 
+          <ScenarioExplorer input={input} />
+
           <div className="card overflow-hidden">
             <div className="border-b border-bank-100 px-5 py-3">
               <h2 className="text-sm font-semibold text-bank-800">
-                Comparaison au scénario ({formatFx(scenarioST)} MAD / {fxLabel})
+                Détail de votre scénario ({formatFx(scenarioST)} MAD / {fxLabel})
               </h2>
+              <p className="mt-0.5 text-[11px] text-bank-500">
+                Ajustez le curseur « Et si le cours bouge » pour un cas
+                personnalisé — le tableau et la recommandation suivent.
+              </p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
