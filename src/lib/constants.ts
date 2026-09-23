@@ -51,19 +51,19 @@ export const INSTRUMENT_META = {
     id: "forward" as const,
     name: "Forward",
     short: "Change à terme OTC",
-    color: "#1e566d",
+    color: "#2E2C38",
   },
   call: {
     id: "call" as const,
     name: "Option vanilla",
     short: "Call (import) / Put (export)",
-    color: "#0d9488",
+    color: "#EE5B47",
   },
   tunnel: {
     id: "tunnel" as const,
     name: "Tunnel",
     short: "Collar zéro-coût",
-    color: "#c9a227",
+    color: "#FFB900",
   },
   futures: {
     id: "futures" as const,

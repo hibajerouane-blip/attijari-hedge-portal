@@ -129,7 +129,7 @@ export default function MarchePage() {
                   onClick={() => setPeriod(p.id)}
                   className={`rounded-md px-3 py-1.5 text-xs font-semibold ${
                     period === p.id
-                      ? "bg-teal-accent text-white"
+                      ? "bg-brand-orange text-brand-bar"
                       : "bg-bank-100 text-bank-700 hover:bg-bank-200"
                   }`}
                 >
@@ -139,7 +139,7 @@ export default function MarchePage() {
             </div>
             <HistoryChart
               data={filtered}
-              color={pair === "EURMAD" ? "#1e566d" : "#0d9488"}
+              color={pair === "EURMAD" ? "#2E2C38" : "#EE5B47"}
             />
           </div>
 

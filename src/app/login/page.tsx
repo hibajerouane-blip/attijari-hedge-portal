@@ -1,8 +1,18 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+
+function BrandMark() {
+  return (
+    <div
+      className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-mark-awb text-white shadow-lg"
+      aria-hidden
+    >
+      <span className="text-lg font-black tracking-tighter">AW</span>
+    </div>
+  );
+}
 
 function LoginForm() {
   const router = useRouter();
@@ -38,17 +48,32 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-bank-950 via-bank-900 to-bank-800 px-4">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center text-white">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-teal-accent text-lg font-bold">
-            HD
-          </div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            HedgeDesk Demo
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-hero-awb px-4 py-10">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-50"
+        style={{
+          backgroundImage:
+            "radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px)",
+          backgroundSize: "18px 18px",
+        }}
+      />
+      <div className="pointer-events-none absolute -left-20 top-10 h-72 w-72 rounded-full bg-brand-orange/20 blur-3xl" />
+      <div className="pointer-events-none absolute -right-16 bottom-0 h-64 w-64 rounded-full bg-brand-red/25 blur-3xl" />
+
+      <div className="relative w-full max-w-md">
+        <div className="mb-8 text-center text-brand-light">
+          <BrandMark />
+          <h1 className="mt-4 text-2xl font-bold tracking-tight">
+            Attijari Marchés
           </h1>
-          <p className="mt-1 text-sm text-bank-300">
-            Couverture FX — Démo Stage · Portail client corporate
+          <p className="mt-1 text-sm text-brand-light/70">
+            Couverture de change · Desk commercial FX
+          </p>
+          <div className="mt-3 flex justify-center">
+            <span className="badge-demo">Démo pédagogique stage</span>
+          </div>
+          <p className="mt-3 text-[11px] italic text-brand-light/45">
+            Croire en vous
           </p>
         </div>
 
@@ -93,7 +118,7 @@ function LoginForm() {
           </div>
 
           {error && (
-            <div className="mt-4 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+            <div className="mt-4 rounded-lg bg-brand-red-soft px-3 py-2 text-sm text-brand-red-dark">
               {error}
             </div>
           )}
@@ -111,6 +136,10 @@ function LoginForm() {
             <code className="font-mono">Demo2026!</code>
           </div>
         </form>
+
+        <p className="mt-6 text-center text-[10px] text-brand-light/40">
+          Données synthétiques — ne constitue ni conseil ni offre bancaire.
+        </p>
       </div>
     </div>
   );
@@ -120,7 +149,7 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-bank-950 text-white">
+        <div className="flex min-h-screen items-center justify-center bg-brand-bar text-brand-light">
           Chargement…
         </div>
       }

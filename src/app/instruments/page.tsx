@@ -4,8 +4,8 @@ const INSTRUMENTS = [
   {
     name: "Forward (change à terme)",
     badge: "IRP",
-    color: "border-l-bank-700",
-    badgeBg: "bg-bank-100 text-bank-700",
+    color: "border-l-brand-ink",
+    badgeBg: "bg-bank-100 text-bank-800",
     summary:
       "Contrat OTC fixant dès aujourd'hui le cours d'achat ou de vente d'une devise à une date future. Aucune prime initiale.",
     formula: "F = S × e^((r_MAD − r_devise) × T)",
@@ -20,8 +20,8 @@ const INSTRUMENTS = [
   {
     name: "Option vanilla (Garman-Kohlhagen)",
     badge: "Option",
-    color: "border-l-teal-accent",
-    badgeBg: "bg-teal-50 text-teal-accent",
+    color: "border-l-brand-red",
+    badgeBg: "bg-brand-red-soft text-brand-red-dark",
     summary:
       "Option européenne sur change. L'importateur achète un call (protection hausse) ; l'exportateur un put (protection baisse).",
     formula: "C = S e^(−r_f T) N(d1) − K e^(−r_d T) N(d2)",
@@ -36,8 +36,8 @@ const INSTRUMENTS = [
   {
     name: "Tunnel (collar zéro-coût)",
     badge: "Structure",
-    color: "border-l-gold-soft",
-    badgeBg: "bg-amber-50 text-amber-800",
+    color: "border-l-brand-orange",
+    badgeBg: "bg-brand-orange-soft text-brand-orange-dark",
     when: [
       "Client refuse de payer une prime mais accepte de céder une partie d'upside",
       "Besoin d'un corridor de change (budget min / max)",
@@ -106,7 +106,7 @@ export default function InstrumentsPage() {
               {ins.formula}
             </div>
             <div className="mt-4">
-              <div className="text-xs font-semibold uppercase tracking-wide text-teal-accent">
+              <div className="text-xs font-semibold uppercase tracking-wide text-brand-red">
                 Quand l&apos;utiliser
               </div>
               <ul className="mt-1.5 list-disc space-y-1 pl-4 text-sm text-bank-700">
@@ -133,7 +133,7 @@ export default function InstrumentsPage() {
         ))}
       </div>
 
-      <div className="card flex flex-col items-start gap-3 border-teal-accent/20 bg-gradient-to-r from-white to-bank-50 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="card flex flex-col items-start gap-3 border-brand-orange/30 bg-gradient-to-r from-white to-brand-orange-soft/40 p-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-bank-600">
           Le scénario <strong>Non couvert</strong> reste toujours affiché comme
           baseline dans le simulateur — pour montrer le coût du risque de

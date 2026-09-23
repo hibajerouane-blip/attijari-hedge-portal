@@ -94,7 +94,7 @@ export default function ComparerPage() {
                 onChange={(e) =>
                   setVisible((v) => ({ ...v, [k]: e.target.checked }))
                 }
-                className="accent-teal-accent"
+                className="accent-brand-orange"
               />
               <span
                 className="h-2 w-2 rounded-full"

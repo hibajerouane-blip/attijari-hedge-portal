@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #f0f7fa;
-  --foreground: #0f2734;
+  --background: #f7f5f2;
+  --foreground: #202024;
 }
 
 body {
@@ -28,17 +28,25 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center rounded-lg bg-bank-800 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-bank-700 focus:outline-none focus:ring-2 focus:ring-teal-accent/40 disabled:opacity-50;
+  @apply inline-flex items-center justify-center rounded-lg bg-brand-orange px-4 py-2.5 text-sm font-semibold text-brand-bar transition hover:bg-brand-orange-dark focus:outline-none focus:ring-2 focus:ring-brand-orange/40 disabled:opacity-50;
 }
 
 .btn-secondary {
-  @apply inline-flex items-center justify-center rounded-lg border border-bank-200 bg-white px-4 py-2.5 text-sm font-medium text-bank-800 transition hover:bg-bank-50;
+  @apply inline-flex items-center justify-center rounded-lg border-2 border-brand-orange bg-transparent px-4 py-2.5 text-sm font-semibold text-brand-ink transition hover:bg-brand-orange-soft;
+}
+
+.btn-ghost-light {
+  @apply inline-flex items-center justify-center rounded-lg border-2 border-brand-orange bg-transparent px-4 py-2.5 text-sm font-semibold text-brand-light transition hover:bg-brand-orange/15;
 }
 
 .field {
-  @apply w-full rounded-lg border border-bank-200 bg-white px-3 py-2 text-sm text-bank-900 shadow-sm outline-none transition focus:border-teal-accent focus:ring-2 focus:ring-teal-accent/20;
+  @apply w-full rounded-lg border border-bank-200 bg-white px-3 py-2 text-sm text-bank-900 shadow-sm outline-none transition focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/25;
 }
 
 .label {
   @apply mb-1 block text-xs font-medium uppercase tracking-wide text-bank-500;
+}
+
+.badge-demo {
+  @apply inline-flex items-center rounded-full border border-brand-orange/40 bg-brand-orange/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-orange;
 }

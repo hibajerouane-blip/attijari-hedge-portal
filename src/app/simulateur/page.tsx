@@ -207,7 +207,7 @@ export default function SimulateurPage() {
               step={0.25}
               value={shockPct}
               onChange={(e) => setShockPct(Number(e.target.value))}
-              className="w-full accent-teal-accent"
+              className="w-full accent-brand-orange"
             />
             <div className="mt-1 flex justify-between text-[10px] text-bank-400">
               <span>−12 %</span>
@@ -268,7 +268,7 @@ export default function SimulateurPage() {
                     <tr
                       key={r.id}
                       className={`border-t border-bank-100 ${
-                        r.id === reco.bestId ? "bg-teal-50/60" : ""
+                        r.id === reco.bestId ? "bg-brand-orange-soft/70" : ""
                       }`}
                     >
                       <td className="px-5 py-2.5 text-bank-400">{i + 1}</td>
@@ -295,11 +295,11 @@ export default function SimulateurPage() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-teal-accent/30 bg-gradient-to-r from-bank-950 to-bank-800 p-5 text-white">
-            <div className="text-xs font-semibold uppercase tracking-wider text-teal-soft">
+          <div className="rounded-xl border border-brand-orange/40 bg-gradient-to-r from-brand-bar to-brand-ink p-5 text-white">
+            <div className="text-xs font-semibold uppercase tracking-wider text-brand-orange">
               Recommandation desk (pédagogique)
             </div>
-            <p className="mt-2 text-sm leading-relaxed text-bank-100">
+            <p className="mt-2 text-sm leading-relaxed text-brand-light/90">
               {reco.text}
             </p>
           </div>

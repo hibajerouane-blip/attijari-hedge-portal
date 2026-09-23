@@ -10,24 +10,29 @@ const config: Config = {
     extend: {
       colors: {
         bank: {
-          50: "#f0f7fa",
-          100: "#d9eef5",
-          200: "#b3dde9",
-          300: "#7cc2d6",
-          400: "#3f9fbb",
-          500: "#26839f",
-          600: "#1f6a85",
-          700: "#1e566d",
-          800: "#1f485b",
-          900: "#1e3d4e",
-          950: "#0f2734",
+          50: "#F7F5F2",
+          100: "#EFEBE6",
+          200: "#E0DAD2",
+          300: "#C9C0B5",
+          400: "#A89F94",
+          500: "#777777",
+          600: "#5C564F",
+          700: "#3F3A35",
+          800: "#2E2C38",
+          900: "#202024",
+          950: "#16161A",
         },
-        teal: {
-          accent: "#0d9488",
-          soft: "#14b8a6",
-        },
-        gold: {
-          soft: "#c9a227",
+        brand: {
+          orange: "#FFB900",
+          "orange-dark": "#F7B500",
+          "orange-light": "#FFD24D",
+          "orange-soft": "#FFF8E6",
+          red: "#EE5B47",
+          "red-dark": "#D94A38",
+          "red-soft": "#FDEEEB",
+          ink: "#2E2C38",
+          bar: "#202024",
+          light: "#F4F4F4",
         },
       },
       fontFamily: {
@@ -35,7 +40,16 @@ const config: Config = {
         mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
       },
       boxShadow: {
-        card: "0 1px 3px rgba(15,39,52,0.08), 0 8px 24px rgba(15,39,52,0.06)",
+        card: "0 1px 3px rgba(32,32,36,0.06), 0 8px 28px rgba(32,32,36,0.06)",
+        hero: "0 20px 50px rgba(238,91,71,0.12)",
+      },
+      backgroundImage: {
+        "hero-awb":
+          "linear-gradient(135deg, #202024 0%, #2E2C38 45%, #3A2830 100%)",
+        "mark-awb":
+          "linear-gradient(160deg, #FFB900 0%, #FFB900 48%, #EE5B47 52%, #EE5B47 100%)",
+        "pattern-dots":
+          "radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)",
       },
     },
   },
