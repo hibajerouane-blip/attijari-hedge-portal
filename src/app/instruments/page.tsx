@@ -2,68 +2,93 @@ import Link from "next/link";
 
 const INSTRUMENTS = [
   {
-    name: "Forward (change à terme)",
-    badge: "IRP",
+    name: "Change à terme (forward)",
+    tag: "Le plus simple",
     color: "border-l-brand-ink",
-    badgeBg: "bg-bank-100 text-bank-800",
-    summary:
-      "Contrat OTC fixant dès aujourd'hui le cours d'achat ou de vente d'une devise à une date future. Aucune prime initiale.",
-    formula: "F = S × e^((r_MAD − r_devise) × T)",
-    when: [
-      "Facture ferme (import ou export) avec date de règlement connue",
-      "Besoin de certitude budgétaire (trésorerie, pricing client)",
-      "Client prêt à renoncer à un spot plus favorable",
+    tagBg: "bg-bank-100 text-bank-800",
+    logic:
+      "Vous fixez dès aujourd'hui le cours auquel vous achèterez ou vendrez votre devise à une date future (par exemple dans 3 mois). Le jour J, vous appliquez ce cours convenu — pas le cours du marché du moment.",
+    advantages: [
+      "Budget connu à l'avance : vous savez exactement ce que coûtera (ou rapportera) votre devise",
+      "Aucun paiement de prime au départ",
+      "Simple à expliquer et à suivre en trésorerie",
     ],
-    use: "Sécuriser un budget sans décaissement de prime. Obligation d'exécuter à maturité.",
-    risks: "Pas de flexibilité si le spot évolue favorablement (coût d'opportunité).",
+    risks: [
+      "Vous êtes engagé : vous devez exécuter au cours fixé, même si le marché devient plus favorable",
+      "Si le cours spot évolue dans votre sens, vous ne profitez pas de cette amélioration",
+    ],
+    offers: [
+      "Facture ferme avec date de paiement connue",
+      "Besoin de sécuriser un prix de vente ou un coût d'achat",
+      "Entreprise qui privilégie la certitude plutôt que la flexibilité",
+    ],
   },
   {
-    name: "Option vanilla",
-    badge: "Option",
+    name: "Option de change",
+    tag: "Protection souple",
     color: "border-l-brand-red",
-    badgeBg: "bg-brand-red-soft text-brand-red-dark",
-    summary:
-      "Option européenne sur change. L'importateur achète un call (protection hausse) ; l'exportateur un put (protection baisse).",
-    formula: "C = S e^(−r_f T) N(d1) − K e^(−r_d T) N(d2)",
-    when: [
-      "Flux probable mais non certain (appel d'offres, volume variable)",
-      "Client qui veut garder l'upside si le spot lui est favorable",
-      "Volatilité élevée : la protection vaut le coût de la prime",
+    tagBg: "bg-brand-red-soft text-brand-red-dark",
+    logic:
+      "Vous achetez le droit (pas l'obligation) d'échanger à un cours maximum ou minimum convenu. Si le marché est plus avantageux le jour J, vous laissez l'option de côté et vous prenez le meilleur cours. En contrepartie, vous payez une prime.",
+    advantages: [
+      "Vous êtes protégé contre le mauvais scénario",
+      "Vous gardez le bénéfice si le cours évolue en votre faveur",
+      "Utile quand le montant ou la date du flux n'est pas encore certain",
     ],
-    use: "Protection asymétrique : plancher/plafond garanti + conservation de l'upside. Paiement d'une prime.",
-    risks: "Coût de la prime ; sensibilité à la volatilité implicite.",
+    risks: [
+      "La prime a un coût, payé même si vous n'utilisez pas l'option",
+      "Plus la protection est forte (ou la période longue), plus la prime peut être élevée",
+    ],
+    offers: [
+      "Appel d'offres, commande probable mais pas encore signée",
+      "Volume de devises encore incertain",
+      "Client qui veut une assurance tout en gardant l'opportunité d'un meilleur cours",
+    ],
   },
   {
-    name: "Tunnel (collar zéro-coût)",
-    badge: "Structure",
+    name: "Tunnel de change",
+    tag: "Sans prime nette",
     color: "border-l-brand-orange",
-    badgeBg: "bg-brand-orange-soft text-brand-orange-dark",
-    when: [
-      "Client refuse de payer une prime mais accepte de céder une partie d'upside",
-      "Besoin d'un corridor de change (budget min / max)",
-      "Dialogue commercial fréquent sur les collars",
+    tagBg: "bg-brand-orange-soft text-brand-orange-dark",
+    logic:
+      "Vous définissez une « zone » de cours : un plancher et un plafond. À l'intérieur de cette zone, vous suivez le marché. En dessous ou au-dessus, vous êtes ramené aux bornes du tunnel. En pratique, la protection est souvent financée en cédant une partie du gain potentiel — d'où une prime nette proche de zéro.",
+    advantages: [
+      "Protection contre les mouvements extrêmes, sans (ou presque sans) débourser de prime",
+      "Budget encadré : vous connaissez le pire et le meilleur cours possibles",
+      "Compromis fréquent entre certitude totale (terme) et option payante",
     ],
-    summary:
-      "Achat d'une option de protection financé par la vente d'une option opposée. Strikes calibrés pour prime nette ≈ 0.",
-    formula: "Taux effectif ∈ [K_put , K_call]",
-    use: "Compromis commercial : protection sans décaissement, en cédant une partie de l'upside.",
-    risks: "Corridor borné — hors tunnel, le client est plafonné / plancherisé.",
+    risks: [
+      "Vous abandonnez une partie du gain si le cours dépasse fortement la borne favorable",
+      "Le résultat est borné : moins de surprise mauvaise, mais aussi moins de surprise bonne",
+    ],
+    offers: [
+      "Client qui ne souhaite pas payer de prime d'option",
+      "Besoin d'un corridor de change pour le budget (min / max)",
+      "Flux réguliers où un encadrement suffit",
+    ],
   },
   {
-    name: "Futures FX",
-    badge: "MTM",
+    name: "Futures de change",
+    tag: "Marché listé",
     color: "border-l-violet-600",
-    badgeBg: "bg-violet-50 text-violet-700",
-    summary:
-      "Contrat standardisé marqué au marché. Taux proche du forward IRP, avec un léger basis listé et le coût d'opportunité des marges.",
-    formula: "F_fut ≈ F_IRP × (1 + basis) − coût_marge",
-    when: [
-      "Besoin de liquidité / transparence d'un marché listé",
-      "Client équipé pour gérer les appels de marge",
-      "Comparer OTC (forward) vs listé (futures) en entretien",
+    tagBg: "bg-violet-50 text-violet-700",
+    logic:
+      "Comme un change à terme, vous vous engagez sur un cours futur, mais via un contrat standardisé sur un marché organisé. Le contrat est réévalué régulièrement : selon l'évolution du marché, vous pouvez devoir déposer ou récupérer des fonds (appels de marge).",
+    advantages: [
+      "Cours et liquidité souvent plus transparents (marché public)",
+      "Possibilité de sortir ou d'ajuster plus facilement qu'un contrat bilatéral",
+      "Utile pour comparer avec une offre de change à terme de la banque",
     ],
-    use: "Payoff linéaire proche du forward ; distinction via basis et marge.",
-    risks: "Appels de marge quotidiens ; basis éventuel vs OTC ; funding collatéral.",
+    risks: [
+      "Appels de marge : besoin de liquidité même si le besoin métier n'a pas changé",
+      "Le contrat est standardisé (montants, dates) — moins « sur mesure » qu'un forward bancaire",
+      "Écart possible entre le futures et le cours que vous obtiendriez en OTC",
+    ],
+    offers: [
+      "Trésorerie équipée pour gérer les appels de marge",
+      "Besoin de flexibilité / liquidité d'un marché listé",
+      "Comparaison entre solution banque (OTC) et solution marché",
+    ],
   },
 ];
 
@@ -73,9 +98,9 @@ export default function InstrumentsPage() {
       <div>
         <h1 className="text-2xl font-semibold text-bank-900">Instruments</h1>
         <p className="mt-1 max-w-2xl text-sm text-bank-500">
-          Fiches produit pour le dialogue commercial avec un trésorier
-          corporate. Chaque fiche indique <strong>quand proposer</strong> le
-          produit.
+          Comprendre en langage simple comment chaque solution protège votre
+          exposition en devises : logique, avantages, risques, et dans quels
+          cas votre desk vous la propose.
         </p>
       </div>
 
@@ -90,53 +115,65 @@ export default function InstrumentsPage() {
                 {ins.name}
               </h2>
               <span
-                className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${ins.badgeBg}`}
+                className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${ins.tagBg}`}
               >
-                {ins.badge}
+                {ins.tag}
               </span>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-bank-600">
-              {ins.summary}
-            </p>
-            <div className="mt-4 rounded-lg bg-bank-50 px-3 py-2 font-mono text-xs text-bank-800">
-              {ins.formula}
-            </div>
+
             <div className="mt-4">
               <div className="text-xs font-semibold uppercase tracking-wide text-brand-red">
-                Quand l&apos;utiliser
+                En pratique
+              </div>
+              <p className="mt-1.5 text-sm leading-relaxed text-bank-600">
+                {ins.logic}
+              </p>
+            </div>
+
+            <div className="mt-4">
+              <div className="text-xs font-semibold uppercase tracking-wide text-bank-400">
+                Avantages
               </div>
               <ul className="mt-1.5 list-disc space-y-1 pl-4 text-sm text-bank-700">
-                {ins.when.map((w) => (
-                  <li key={w}>{w}</li>
+                {ins.advantages.map((a) => (
+                  <li key={a}>{a}</li>
                 ))}
               </ul>
             </div>
-            <dl className="mt-4 space-y-2 text-sm">
-              <div>
-                <dt className="text-xs font-semibold uppercase text-bank-400">
-                  Usage desk
-                </dt>
-                <dd className="text-bank-700">{ins.use}</dd>
+
+            <div className="mt-4">
+              <div className="text-xs font-semibold uppercase tracking-wide text-bank-400">
+                Risques / points d&apos;attention
               </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase text-bank-400">
-                  Points d&apos;attention
-                </dt>
-                <dd className="text-bank-700">{ins.risks}</dd>
+              <ul className="mt-1.5 list-disc space-y-1 pl-4 text-sm text-bank-700">
+                {ins.risks.map((r) => (
+                  <li key={r}>{r}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mt-4">
+              <div className="text-xs font-semibold uppercase tracking-wide text-bank-400">
+                Pour qui / quand on le propose
               </div>
-            </dl>
+              <ul className="mt-1.5 list-disc space-y-1 pl-4 text-sm text-bank-700">
+                {ins.offers.map((o) => (
+                  <li key={o}>{o}</li>
+                ))}
+              </ul>
+            </div>
           </article>
         ))}
       </div>
 
       <div className="card flex flex-col items-start gap-3 border-brand-orange/30 bg-gradient-to-r from-white to-brand-orange-soft/40 p-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-bank-600">
-          Le scénario <strong>Non couvert</strong> reste toujours affiché comme
-          baseline dans le simulateur — pour montrer le coût du risque de
-          change.
+          Dans le simulateur, vous pouvez comparer ces solutions au scénario{" "}
+          <strong>sans couverture</strong>, pour voir concrètement l&apos;impact
+          sur votre résultat.
         </p>
         <Link href="/simulateur" className="btn-primary shrink-0">
-          Simuler un besoin
+          Simuler mon besoin
         </Link>
       </div>
     </div>
