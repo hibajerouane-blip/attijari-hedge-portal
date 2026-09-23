@@ -297,7 +297,7 @@ export default function SimulateurPage() {
 
           <div className="rounded-xl border border-brand-orange/40 bg-gradient-to-r from-brand-bar to-brand-ink p-5 text-white">
             <div className="text-xs font-semibold uppercase tracking-wider text-brand-orange">
-              Recommandation desk (pédagogique)
+              Recommandation desk
             </div>
             <p className="mt-2 text-sm leading-relaxed text-brand-light/90">
               {reco.text}

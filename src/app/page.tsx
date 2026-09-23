@@ -36,7 +36,6 @@ export default function HomePage() {
 
   return (
     <div className="space-y-8">
-      {/* Hero — espace client sobre */}
       <section className="relative overflow-hidden rounded-2xl bg-hero-awb text-brand-light shadow-hero">
         <div
           className="pointer-events-none absolute inset-0 opacity-50"
@@ -51,9 +50,11 @@ export default function HomePage() {
 
         <div className="relative px-6 py-12 sm:px-10 sm:py-16 lg:px-14 lg:py-20">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="badge-demo">Démo pédagogique stage</span>
+            <span className="inline-flex items-center rounded-full border border-brand-orange/40 bg-brand-orange/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-orange">
+              Accès réservé
+            </span>
             <span className="text-[11px] uppercase tracking-wider text-brand-light/45">
-              Accès sécurisé
+              Espace client
             </span>
           </div>
 
@@ -95,7 +96,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Bandeau cotations — minimal */}
       <section className="overflow-hidden rounded-xl border border-bank-200 bg-white shadow-card">
         <div className="flex flex-wrap items-stretch divide-y divide-bank-100 sm:divide-x sm:divide-y-0">
           <div className="flex items-center gap-2 px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-bank-500 sm:px-5">
@@ -103,7 +103,7 @@ export default function HomePage() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-orange opacity-50" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-orange" />
             </span>
-            Référence
+            Cotation
           </div>
           {err && (
             <div className="flex-1 px-4 py-3 text-sm text-brand-red sm:px-5">
@@ -119,7 +119,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Zone confiance — courte */}
       <section className="rounded-xl border border-bank-200 bg-white px-5 py-5 shadow-card sm:px-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>

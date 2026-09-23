@@ -47,6 +47,3 @@ input[type="number"]::-webkit-outer-spin-button {
   @apply mb-1 block text-xs font-medium uppercase tracking-wide text-bank-500;
 }
 
-.badge-demo {
-  @apply inline-flex items-center rounded-full border border-brand-orange/40 bg-brand-orange/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-orange;
-}

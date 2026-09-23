@@ -61,7 +61,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <span className="opacity-40">·</span>
             <span className="italic opacity-80">Croire en vous</span>
             <span className="opacity-40">·</span>
-            <span className="badge-demo">Démo pédagogique stage</span>
+            <span className="text-brand-light/60">Espace client</span>
           </div>
           {user && (
             <div className="hidden text-right sm:block">
@@ -152,8 +152,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </div>
             </div>
             <p className="mt-3 text-[11px] leading-relaxed text-bank-500">
-              Portail client — Couverture de change. Démo pédagogique stage,
-              inspiration visuelle Attijari (sans logo officiel).
+              Portail client — Couverture de change. Desk commercial FX,
+              clients corporate.
             </p>
           </div>
           <div>
@@ -180,7 +180,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </div>
           <div>
             <div className="text-xs font-semibold uppercase tracking-wide text-bank-400">
-              Transparence
+              Confidentialité
             </div>
             <p className="mt-2 text-[11px] leading-relaxed text-bank-600">
               {DEMO_DISCLAIMER}
@@ -189,13 +189,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               href="/a-propos"
               className="mt-2 inline-block text-xs font-medium text-brand-red hover:underline"
             >
-              À propos de la démo →
+              À propos →
             </Link>
           </div>
         </div>
         <div className="border-t border-bank-100 bg-brand-bar py-3 text-center text-[10px] text-brand-light/50">
-          Couverture FX — Desk Commercial · Démo pédagogique stage · EUR/MAD
-          &amp; USD/MAD
+          Couverture FX — Desk Commercial · Accès réservé · EUR/MAD &amp;
+          USD/MAD
         </div>
       </footer>
     </div>

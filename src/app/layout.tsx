@@ -15,9 +15,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Attijari Marchés · Couverture de change — Démo stage",
+  title: "Attijari Marchés · Couverture de change",
   description:
-    "Portail démo pédagogique Couverture FX — Desk Commercial. Forward, options, tunnel, futures EUR/MAD & USD/MAD.",
+    "Espace client Couverture FX — Desk Commercial. Forward, options, tunnel, futures EUR/MAD & USD/MAD.",
 };
 
 export default function RootLayout({

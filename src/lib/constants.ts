@@ -1,10 +1,10 @@
-/** Constantes de démo — seeds réalistes BAM-like (non officiels). */
+/** Constantes portail — seeds de référence marché (non officiels). */
 
 export const DEMO_USER = {
   username: "client@demo.ma",
   password: "Demo2026!",
-  displayName: "Client Démo Corporate",
-  company: "Société Démo SA",
+  displayName: "Client Corporate",
+  company: "Groupe Client SA",
 } as const;
 
 export const SESSION_COOKIE = "hedgedesk_session";
@@ -17,15 +17,15 @@ export const PAIR_LABELS: Record<FxPair, string> = {
   USDMAD: "USD/MAD",
 };
 
-/** Spots de départ réalistes (ordre de grandeur BAM). */
+/** Spots de départ (ordre de grandeur marché). */
 export const SPOT_SEEDS: Record<FxPair, number> = {
   EURMAD: 10.92,
   USDMAD: 9.48,
 };
 
-/** Taux annuels continus de référence (démo). */
+/** Taux annuels continus de référence. */
 export const DEFAULT_RATES = {
-  rMad: 0.0275, // BAM-like
+  rMad: 0.0275,
   rEur: 0.035,
   rUsd: 0.045,
   volEur: 0.1,
@@ -75,5 +75,6 @@ export const INSTRUMENT_META = {
 
 export type InstrumentId = keyof typeof INSTRUMENT_META;
 
+/** Mention courte affichable en pied de page / espace client. */
 export const DEMO_DISCLAIMER =
-  "Démo pédagogique stage — données synthétiques. Ne constitue ni un conseil en investissement ni une offre bancaire.";
+  "Accès réservé — usages internes. Les informations présentées ne constituent ni un conseil en investissement ni une offre bancaire.";

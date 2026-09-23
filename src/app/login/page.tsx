@@ -19,8 +19,8 @@ function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const next = params.get("next") || "/";
-  const [username, setUsername] = useState("client@demo.ma");
-  const [password, setPassword] = useState("Demo2026!");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -62,12 +62,13 @@ function LoginForm() {
       <div className="pointer-events-none absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-brand-red/20 blur-3xl" />
 
       <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center gap-10 px-4 py-12 sm:px-8 lg:flex-row lg:items-center lg:gap-16 lg:px-10 lg:py-16">
-        {/* Hero — ton espace client, sans catalogue produit */}
         <div className="flex-1 text-brand-light lg:max-w-xl">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="badge-demo">Démo pédagogique stage</span>
+            <span className="inline-flex items-center rounded-full border border-brand-orange/40 bg-brand-orange/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-orange">
+              Accès réservé
+            </span>
             <span className="text-[11px] uppercase tracking-wider text-brand-light/45">
-              Accès sécurisé
+              Connexion sécurisée
             </span>
           </div>
 
@@ -115,7 +116,6 @@ function LoginForm() {
           </p>
         </div>
 
-        {/* Formulaire */}
         <div className="w-full shrink-0 lg:w-[400px]">
           <form
             onSubmit={onSubmit}
@@ -170,13 +170,6 @@ function LoginForm() {
             >
               {loading ? "Connexion…" : "Accéder à mon espace"}
             </button>
-
-            <p className="mt-4 text-center text-[10px] leading-relaxed text-bank-400">
-              Démo stage —{" "}
-              <code className="font-mono text-bank-500">client@demo.ma</code>
-              {" / "}
-              <code className="font-mono text-bank-500">Demo2026!</code>
-            </p>
           </form>
 
           <p className="mt-5 text-center text-[10px] leading-relaxed text-brand-light/40">

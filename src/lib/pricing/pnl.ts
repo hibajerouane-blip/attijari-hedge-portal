@@ -229,7 +229,7 @@ export function buildPnLCurve(
   return points;
 }
 
-/** Texte de recommandation commerciale (pédagogique). */
+/** Texte de recommandation commerciale. */
 export function recommend(
   input: SimInput,
   scenarioST: number
@@ -290,7 +290,7 @@ export function recommend(
   }
 
   text +=
-    "Rappel : recommandation pédagogique — pas un conseil en investissement.";
+    "Rappel : indication desk — ne constitue pas un conseil en investissement.";
 
   return { bestId: best.id, text };
 }

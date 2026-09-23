@@ -2,7 +2,7 @@
  * Futures FX — contrat listé vs forward OTC.
  *
  * En théorie (cash & carry), le futures converge vers le forward IRP.
- * Pour la démo pédagogique on rend le futures **distinct** du forward :
+ * On rend le futures **distinct** du forward :
  *   1. Petit basis de cotation (F_fut = F_IRP × (1 + basis_bps/10000))
  *   2. Coût d'opportunité des appels de marge (marge initiale × r_MAD × T)
  *
@@ -15,7 +15,7 @@ import { forwardPrice, type ForwardParams } from "./forward";
 /** Basis listé vs OTC, en points de base du forward IRP. */
 export const FUTURES_BASIS_BPS = 12;
 
-/** Marge initiale (% du notionnel MAD) — simplifié pour la démo. */
+/** Marge initiale (% du notionnel MAD) — simplifié. */
 export const FUTURES_MARGIN_PCT = 0.04;
 
 export function futuresPrice(p: ForwardParams): number {

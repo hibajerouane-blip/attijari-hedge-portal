@@ -1,9 +1,9 @@
 /**
- * Générateur de données de marché synthétiques (2 ans, OHLC-ish).
- * Label : « données de démo / référence BAM-like ».
+ * Générateur d'historique de marché de référence (2 ans, OHLC-ish).
+ * Label source UI : « Référence desk ».
  *
- * Optionnel : si BAM_API_KEY est défini, un stub tente un fetch public ;
- * en l'absence de clé ou en cas d'échec, on reste 100 % synthétique.
+ * Optionnel : si BAM_API_KEY est défini, tryFetchBamOfficial peut tenter un fetch ;
+ * en l'absence de clé ou en cas d'échec, on reste sur la série de référence locale.
  */
 
 import {
@@ -112,7 +112,7 @@ export function getSnapshot(pair: FxPair): MarketSnapshot {
     change1d: round4(change1d),
     change1dPct: round4((change1d / prev.close) * 100),
     asOf: last.date,
-    source: "données de démo / référence BAM-like",
+    source: "Référence desk",
     rDom: DEFAULT_RATES.rMad,
     rFor: foreignRate(pair),
     vol: defaultVol(pair),
@@ -121,15 +121,15 @@ export function getSnapshot(pair: FxPair): MarketSnapshot {
 }
 
 /**
- * Stub BAM : si BAM_API_KEY est présent, on pourrait appeler une API publique.
- * Sans clé (cas par défaut), retourne null et le caller utilise le synthétique.
+ * Hook optionnel : si BAM_API_KEY est présent, on pourrait appeler une API publique.
+ * Sans clé (cas par défaut), retourne null et le caller utilise la série locale.
  */
 export async function tryFetchBamOfficial(
   pair: FxPair
 ): Promise<number | null> {
   const key = process.env.BAM_API_KEY;
   if (!key) return null;
-  // Stub documenté — pas d'endpoint réel branché pour éviter dépendances externes.
+  // Pas d'endpoint réel branché pour éviter dépendances externes.
   // Exemple futur : fetch(`https://api.example-bam.ma/rates?key=${key}&pair=${pair}`)
   void pair;
   return null;

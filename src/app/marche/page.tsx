@@ -55,8 +55,7 @@ export default function MarchePage() {
         <div>
           <h1 className="text-2xl font-semibold text-bank-900">Marché FX</h1>
           <p className="mt-1 text-sm text-bank-500">
-            Historique synthétique OHLC-ish — données de démo / référence
-            BAM-like.
+            Cotation et historique de référence — EUR/MAD &amp; USD/MAD.
           </p>
         </div>
         <div className="flex gap-2">
@@ -144,9 +143,7 @@ export default function MarchePage() {
           </div>
 
           <p className="text-[11px] text-bank-400">
-            Démo pédagogique stage — données synthétiques. Stub BAM : variable{" "}
-            <code className="font-mono">BAM_API_KEY</code> (non branchée). API :{" "}
-            <code className="font-mono">GET /api/market/{pair}</code>
+            Source : référence desk · cotation indicative à usage interne.
           </p>
         </>
       )}

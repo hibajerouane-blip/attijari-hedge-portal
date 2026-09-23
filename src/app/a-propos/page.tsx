@@ -5,58 +5,57 @@ export default function AProposPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <div>
-        <span className="badge-demo">Démo pédagogique stage</span>
+        <span className="inline-flex items-center rounded-full border border-brand-orange/40 bg-brand-orange/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-orange">
+          Espace client
+        </span>
         <h1 className="mt-3 text-2xl font-bold tracking-tight text-bank-900">
           À propos
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-bank-600">
-          <strong>Attijari Marchés · Couverture de change</strong> est un
-          portail pédagogique réalisé dans le cadre d&apos;un stage au desk
-          commercial FX. Il illustre comment un conseiller peut dialoguer avec
-          un trésorier corporate autour de la couverture de change (EUR/MAD,
-          USD/MAD).
+          <strong>Attijari Marchés · Couverture de change</strong> est
+          l&apos;espace client dédié à la couverture de change pour la
+          clientèle corporate. Il accompagne le dialogue avec le desk
+          commercial FX sur les paires EUR/MAD et USD/MAD.
         </p>
       </div>
 
       <div className="card space-y-3 p-6">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-bank-500">
-          Ce que fait l&apos;outil
+          Services disponibles
         </h2>
         <ul className="list-disc space-y-2 pl-5 text-sm text-bank-700">
           <li>
-            Présente quatre instruments : forward, option vanilla, tunnel,
+            Présentation des instruments : forward, option vanilla, tunnel,
             futures.
           </li>
           <li>
-            Simule le P&amp;L en MAD sous un choc de spot (importateur /
-            exportateur).
+            Simulation de P&amp;L en MAD selon un scénario de spot (importateur
+            / exportateur).
           </li>
           <li>
-            Compare les payoffs et affiche un historique de marché synthétique.
+            Comparaison des payoffs et suivi des cotations de référence.
           </li>
         </ul>
       </div>
 
       <div className="card space-y-3 p-6">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-bank-500">
-          Identité visuelle
+          Desk commercial
         </h2>
         <p className="text-sm leading-relaxed text-bank-700">
-          L&apos;interface s&apos;inspire de la charte Attijari CIB /
-          Attijariwafa Bank (orange/jaune, rouge/corail, fonds sombres) à des
-          fins de démo stage. Aucun fichier logo officiel n&apos;est embarqué —
-          uniquement un wordmark CSS géométrique original.
+          Votre interlocuteur desk reste disponible pour cadrer un besoin de
+          couverture, comparer les structures et préparer une proposition
+          adaptée à votre flux (échéance, notionnel, profil import / export).
         </p>
       </div>
 
       <div className="card space-y-3 border-brand-orange/30 p-6">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-bank-500">
-          Données &amp; limites
+          Confidentialité
         </h2>
         <p className="text-sm leading-relaxed text-bank-700">
-          {DEMO_DISCLAIMER} Les cotations et historiques sont générés
-          localement (référence BAM-like). Les formules (IRP, Garman-Kohlhagen,
-          collar zéro-coût) sont simplifiées à des fins de formation.
+          {DEMO_DISCLAIMER} Les cotations et historiques affichés sont fournis
+          à titre de référence desk dans le cadre de cet espace client.
         </p>
       </div>
 

@@ -18,7 +18,7 @@ const INSTRUMENTS = [
     risks: "Pas de flexibilité si le spot évolue favorablement (coût d'opportunité).",
   },
   {
-    name: "Option vanilla (Garman-Kohlhagen)",
+    name: "Option vanilla",
     badge: "Option",
     color: "border-l-brand-red",
     badgeBg: "bg-brand-red-soft text-brand-red-dark",
@@ -55,14 +55,14 @@ const INSTRUMENTS = [
     color: "border-l-violet-600",
     badgeBg: "bg-violet-50 text-violet-700",
     summary:
-      "Contrat standardisé marqué au marché. Pour la démo : taux proche du forward IRP avec un léger basis listé + coût d'opportunité des marges.",
+      "Contrat standardisé marqué au marché. Taux proche du forward IRP, avec un léger basis listé et le coût d'opportunité des marges.",
     formula: "F_fut ≈ F_IRP × (1 + basis) − coût_marge",
     when: [
       "Besoin de liquidité / transparence d'un marché listé",
       "Client équipé pour gérer les appels de marge",
       "Comparer OTC (forward) vs listé (futures) en entretien",
     ],
-    use: "Payoff linéaire proche du forward ; distinction pédagogique via basis + marge.",
+    use: "Payoff linéaire proche du forward ; distinction via basis et marge.",
     risks: "Appels de marge quotidiens ; basis éventuel vs OTC ; funding collatéral.",
   },
 ];
@@ -73,13 +73,9 @@ export default function InstrumentsPage() {
       <div>
         <h1 className="text-2xl font-semibold text-bank-900">Instruments</h1>
         <p className="mt-1 max-w-2xl text-sm text-bank-500">
-          Fiches pédagogiques pour le dialogue commercial avec un trésorier
+          Fiches produit pour le dialogue commercial avec un trésorier
           corporate. Chaque fiche indique <strong>quand proposer</strong> le
-          produit. Formules dans{" "}
-          <code className="rounded bg-bank-100 px-1 font-mono text-xs">
-            lib/pricing/
-          </code>
-          .
+          produit.
         </p>
       </div>
 

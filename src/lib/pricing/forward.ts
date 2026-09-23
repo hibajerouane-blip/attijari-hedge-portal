@@ -35,7 +35,7 @@ export function forwardPrice({ spot, rDom, rFor, T }: ForwardParams): number {
  * notionalFx = montant en devise étrangère (EUR ou USD).
  * P&L en MAD = notionalFx * (S_T - F) pour importateur? Attention au signe.
  *
- * Convention commerciale démo :
+ * Convention commerciale :
  * - Importateur couvert : achète FX à F. Sans couverture il paierait S_T.
  *   Gain de couverture (vs non couvert) = notionalFx * (S_T - F) si S_T > F... 
  *   En fait coût net importateur couvert = notionalFx * F
