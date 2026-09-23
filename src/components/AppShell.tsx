@@ -152,18 +152,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </div>
             </div>
             <p className="mt-3 text-[11px] leading-relaxed text-bank-500">
-              Portail démo Couverture FX — Desk Commercial. Inspiration visuelle
-              Attijari CIB / Attijariwafa Bank (stage), sans logo officiel.
+              Portail client — Couverture de change. Démo pédagogique stage,
+              inspiration visuelle Attijari (sans logo officiel).
             </p>
           </div>
           <div>
             <div className="text-xs font-semibold uppercase tracking-wide text-bank-400">
-              Parcours
+              Espace client
             </div>
             <ul className="mt-2 space-y-1 text-sm text-bank-600">
               <li>
                 <Link href="/simulateur" className="hover:text-brand-red">
-                  Simulateur P&amp;L
+                  Simulateur
                 </Link>
               </li>
               <li>
@@ -173,7 +173,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </li>
               <li>
                 <Link href="/marche" className="hover:text-brand-red">
-                  Marché EUR/MAD · USD/MAD
+                  Marché
                 </Link>
               </li>
             </ul>

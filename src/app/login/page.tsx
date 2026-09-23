@@ -2,11 +2,12 @@
 
 import { FormEvent, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { DEMO_DISCLAIMER } from "@/lib/constants";
 
-function BrandMark() {
+function BrandMark({ className = "h-14 w-14" }: { className?: string }) {
   return (
     <div
-      className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-mark-awb text-white shadow-lg"
+      className={`flex shrink-0 items-center justify-center rounded-xl bg-mark-awb text-white shadow-lg ${className}`}
       aria-hidden
     >
       <span className="text-lg font-black tracking-tighter">AW</span>
@@ -48,98 +49,140 @@ function LoginForm() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-hero-awb px-4 py-10">
+    <div className="relative flex min-h-screen overflow-hidden bg-hero-awb">
       <div
-        className="pointer-events-none absolute inset-0 opacity-50"
+        className="pointer-events-none absolute inset-0 opacity-45"
         style={{
           backgroundImage:
-            "radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px)",
+            "radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)",
           backgroundSize: "18px 18px",
         }}
       />
-      <div className="pointer-events-none absolute -left-20 top-10 h-72 w-72 rounded-full bg-brand-orange/20 blur-3xl" />
-      <div className="pointer-events-none absolute -right-16 bottom-0 h-64 w-64 rounded-full bg-brand-red/25 blur-3xl" />
+      <div className="pointer-events-none absolute -left-24 top-0 h-80 w-80 rounded-full bg-brand-orange/15 blur-3xl" />
+      <div className="pointer-events-none absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-brand-red/20 blur-3xl" />
 
-      <div className="relative w-full max-w-md">
-        <div className="mb-8 text-center text-brand-light">
-          <BrandMark />
-          <h1 className="mt-4 text-2xl font-bold tracking-tight">
-            Attijari Marchés
-          </h1>
-          <p className="mt-1 text-sm text-brand-light/70">
-            Couverture de change · Desk commercial FX
-          </p>
-          <div className="mt-3 flex justify-center">
+      <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center gap-10 px-4 py-12 sm:px-8 lg:flex-row lg:items-center lg:gap-16 lg:px-10 lg:py-16">
+        {/* Hero — ton espace client, sans catalogue produit */}
+        <div className="flex-1 text-brand-light lg:max-w-xl">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="badge-demo">Démo pédagogique stage</span>
+            <span className="text-[11px] uppercase tracking-wider text-brand-light/45">
+              Accès sécurisé
+            </span>
           </div>
-          <p className="mt-3 text-[11px] italic text-brand-light/45">
-            Croire en vous
+
+          <div className="mt-8 flex items-center gap-3">
+            <BrandMark className="h-12 w-12 rounded-lg sm:h-14 sm:w-14 sm:rounded-xl" />
+            <div>
+              <div className="text-sm font-semibold tracking-tight sm:text-base">
+                Attijari Marchés
+              </div>
+              <div className="text-[11px] text-brand-light/50">
+                Couverture de change
+              </div>
+            </div>
+          </div>
+
+          <h1 className="mt-8 text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-[2.65rem]">
+            Espace client
+            <span className="mt-1 block text-brand-orange">
+              Couverture de change
+            </span>
+          </h1>
+
+          <p className="mt-5 max-w-md text-sm leading-relaxed text-brand-light/70 sm:text-base">
+            Portail réservé à la clientèle. Connexion sécurisée et
+            accompagnement par le desk — en toute confidentialité.
+          </p>
+
+          <ul className="mt-8 hidden space-y-3 text-sm text-brand-light/55 sm:block">
+            <li className="flex items-start gap-2.5">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-orange" />
+              Accès dédié aux clients corporate
+            </li>
+            <li className="flex items-start gap-2.5">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-orange" />
+              Session sécurisée · échange confidentiel
+            </li>
+            <li className="flex items-start gap-2.5">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-orange" />
+              Accompagnement desk commercial
+            </li>
+          </ul>
+
+          <p className="mt-10 text-[11px] italic text-brand-light/40">
+            « Croire en vous »
           </p>
         </div>
 
-        <form
-          onSubmit={onSubmit}
-          className="rounded-2xl border border-white/10 bg-white p-6 shadow-2xl"
-        >
-          <h2 className="text-lg font-semibold text-bank-900">Connexion</h2>
-          <p className="mt-1 text-xs text-bank-500">
-            Accès sécurisé (session httpOnly) — identifiants de démonstration.
-          </p>
-
-          <div className="mt-5 space-y-4">
-            <div>
-              <label className="label" htmlFor="username">
-                Identifiant
-              </label>
-              <input
-                id="username"
-                className="field"
-                type="email"
-                autoComplete="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label className="label" htmlFor="password">
-                Mot de passe
-              </label>
-              <input
-                id="password"
-                className="field"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          {error && (
-            <div className="mt-4 rounded-lg bg-brand-red-soft px-3 py-2 text-sm text-brand-red-dark">
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="btn-primary mt-6 w-full"
-            disabled={loading}
+        {/* Formulaire */}
+        <div className="w-full shrink-0 lg:w-[400px]">
+          <form
+            onSubmit={onSubmit}
+            className="rounded-2xl border border-white/10 bg-white p-6 shadow-2xl sm:p-8"
           >
-            {loading ? "Connexion…" : "Se connecter"}
-          </button>
+            <h2 className="text-lg font-semibold text-bank-900">Connexion</h2>
+            <p className="mt-1 text-xs leading-relaxed text-bank-500">
+              Identifiez-vous pour accéder à votre espace.
+            </p>
 
-          <div className="mt-4 rounded-lg bg-bank-50 px-3 py-2 text-[11px] text-bank-600">
-            Démo : <code className="font-mono">client@demo.ma</code> /{" "}
-            <code className="font-mono">Demo2026!</code>
-          </div>
-        </form>
+            <div className="mt-6 space-y-4">
+              <div>
+                <label className="label" htmlFor="username">
+                  Identifiant
+                </label>
+                <input
+                  id="username"
+                  className="field"
+                  type="email"
+                  autoComplete="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label className="label" htmlFor="password">
+                  Mot de passe
+                </label>
+                <input
+                  id="password"
+                  className="field"
+                  type="password"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
 
-        <p className="mt-6 text-center text-[10px] text-brand-light/40">
-          Données synthétiques — ne constitue ni conseil ni offre bancaire.
-        </p>
+            {error && (
+              <div className="mt-4 rounded-lg bg-brand-red-soft px-3 py-2 text-sm text-brand-red-dark">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="btn-primary mt-6 w-full"
+              disabled={loading}
+            >
+              {loading ? "Connexion…" : "Accéder à mon espace"}
+            </button>
+
+            <p className="mt-4 text-center text-[10px] leading-relaxed text-bank-400">
+              Démo stage —{" "}
+              <code className="font-mono text-bank-500">client@demo.ma</code>
+              {" / "}
+              <code className="font-mono text-bank-500">Demo2026!</code>
+            </p>
+          </form>
+
+          <p className="mt-5 text-center text-[10px] leading-relaxed text-brand-light/40">
+            {DEMO_DISCLAIMER}
+          </p>
+        </div>
       </div>
     </div>
   );
