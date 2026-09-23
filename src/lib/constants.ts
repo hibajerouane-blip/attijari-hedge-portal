@@ -1,4 +1,4 @@
-/** Constantes portail — seeds de référence marché (non officiels). */
+/** Constantes portail — taux/vols pricing + seeds UI init. */
 
 export const DEMO_USER = {
   username: "client@demo.ma",
@@ -17,7 +17,7 @@ export const PAIR_LABELS: Record<FxPair, string> = {
   USDMAD: "USD/MAD",
 };
 
-/** Spots de départ (ordre de grandeur marché). */
+/** Spots init UI (simulateur) avant chargement API ; le marché live vient de SQLite. */
 export const SPOT_SEEDS: Record<FxPair, number> = {
   EURMAD: 10.92,
   USDMAD: 9.48,

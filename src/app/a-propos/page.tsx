@@ -54,8 +54,9 @@ export default function AProposPage() {
           Confidentialité
         </h2>
         <p className="text-sm leading-relaxed text-bank-700">
-          {DEMO_DISCLAIMER} Les cotations et historiques affichés sont fournis
-          à titre de référence desk dans le cadre de cet espace client.
+          {DEMO_DISCLAIMER} Les historiques proviennent de Bank Al-Maghrib
+          (via Frankfurter) ; le spot peut être fourni par Yahoo Finance entre
+          deux publications BAM.
         </p>
       </div>
 

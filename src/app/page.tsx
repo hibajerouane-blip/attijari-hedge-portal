@@ -179,6 +179,9 @@ function SpotStripRow({
       >
         {formatPct(snap.change1dPct)}
       </span>
+      <span className="hidden text-[10px] text-bank-400 lg:inline" title={snap.asOf}>
+        {snap.source}
+      </span>
     </div>
   );
 }

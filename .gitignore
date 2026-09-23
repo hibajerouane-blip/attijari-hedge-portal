@@ -36,3 +36,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# market SQLite (runtime / sync) — garder data/.gitkeep
+/data/*.db
+/data/*.db-*

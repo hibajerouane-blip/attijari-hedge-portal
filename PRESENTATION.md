@@ -10,7 +10,7 @@ Script oral pour présenter le portail de couverture FX (stage desk commercial).
 > conseiller FX à expliquer et comparer des couvertures EUR/MAD et USD/MAD —
 > forward, option, tunnel et futures — face à l’exposition non couverte. »
 
-Rappeler : **démo de stage, données synthétiques**, pas une offre bancaire.
+Rappeler : cotations BAM (historique) + Yahoo (spot), pas une offre bancaire.
 
 ---
 
@@ -20,7 +20,7 @@ Rappeler : **démo de stage, données synthétiques**, pas une offre bancaire.
    Session httpOnly (JWT) ; middleware protège les pages.
 
 2. **Tableau de bord** — cotations EUR/MAD & USD/MAD + value prop corporate.  
-   Mini-historiques 90 j (série synthétique BAM-like).
+   Mini-historiques / page Marché : historique Bank Al-Maghrib, spot Yahoo.
 
 3. **Instruments** — fiches « quand utiliser » chaque produit (pédagogie desk).
 
@@ -64,4 +64,4 @@ Identifiants démo à laisser visibles à l’écran pendant la présentation.
 - [ ] `npm run build` OK
 - [ ] Login → Simulateur → Comparer en moins de 90 s
 - [ ] Sur un choc +5 % (importateur) : montrer la différence non couvert vs forward / option
-- [ ] Mentionner le disclaimer pied de page : *Démo pédagogique stage — données synthétiques*
+- [ ] Mentionner le disclaimer pied de page et les sources (BAM / Yahoo)

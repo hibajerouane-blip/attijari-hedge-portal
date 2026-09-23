@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
-import { getSnapshot, tryFetchBamOfficial } from "@/lib/market";
+import { ensureMarketData, getSnapshot } from "@/lib/market";
 import type { FxPair } from "@/lib/constants";
+
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function GET(
   _req: Request,
@@ -14,12 +17,13 @@ export async function GET(
     );
   }
 
-  const snap = getSnapshot(key);
-  const bamSpot = await tryFetchBamOfficial(key);
-  if (bamSpot != null) {
-    snap.spot = bamSpot;
-    snap.source = "BAM (via BAM_API_KEY)";
+  try {
+    await ensureMarketData(key);
+    const snap = getSnapshot(key);
+    return NextResponse.json(snap);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Erreur marché";
+    console.error("[api/market]", key, e);
+    return NextResponse.json({ error: message }, { status: 503 });
   }
-
-  return NextResponse.json(snap);
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import HistoryChart from "@/components/HistoryChart";
 import SpotCard from "@/components/SpotCard";
 import type { MarketSnapshot } from "@/lib/market";
@@ -15,22 +15,44 @@ const PERIODS = [
   { id: "2Y", days: 730, label: "2Y" },
 ] as const;
 
+const SPOT_REFRESH_MS = 60_000;
+
 export default function MarchePage() {
   const [pair, setPair] = useState<FxPair>("EURMAD");
   const [period, setPeriod] = useState<(typeof PERIODS)[number]["id"]>("6M");
   const [snap, setSnap] = useState<MarketSnapshot | null>(null);
   const [err, setErr] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = useCallback(async (p: FxPair, quiet = false) => {
+    if (!quiet) setErr("");
+    if (!quiet) setRefreshing(true);
+    try {
+      const r = await fetch(`/api/market/${p}`, { cache: "no-store" });
+      const d = await r.json();
+      if (d.error) {
+        if (!quiet) setErr(d.error);
+      } else {
+        setSnap(d);
+        setErr("");
+      }
+    } catch {
+      if (!quiet) setErr("Erreur de chargement");
+    } finally {
+      if (!quiet) setRefreshing(false);
+    }
+  }, []);
 
   useEffect(() => {
-    setErr("");
-    fetch(`/api/market/${pair}`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.error) setErr(d.error);
-        else setSnap(d);
-      })
-      .catch(() => setErr("Erreur de chargement"));
-  }, [pair]);
+    setSnap(null);
+    load(pair);
+  }, [pair, load]);
+
+  // Auto-refresh spot toutes les 60 s (Yahoo peut bouger entre deux publications BAM)
+  useEffect(() => {
+    const id = setInterval(() => load(pair, true), SPOT_REFRESH_MS);
+    return () => clearInterval(id);
+  }, [pair, load]);
 
   const filtered = useMemo(() => {
     if (!snap) return [];
@@ -55,7 +77,11 @@ export default function MarchePage() {
         <div>
           <h1 className="text-2xl font-semibold text-bank-900">Marché FX</h1>
           <p className="mt-1 text-sm text-bank-500">
-            Cotation et historique de référence — EUR/MAD &amp; USD/MAD.
+            Cotations réelles EUR/MAD &amp; USD/MAD — historique Bank Al-Maghrib,
+            spot Yahoo Finance.
+            {refreshing ? (
+              <span className="ml-2 text-bank-400">Actualisation…</span>
+            ) : null}
           </p>
         </div>
         <div className="flex gap-2">
@@ -143,7 +169,12 @@ export default function MarchePage() {
           </div>
 
           <p className="text-[11px] text-bank-400">
-            Source : référence desk · cotation indicative à usage interne.
+            Historique : {snap.historySource} (cours de référence quotidien via
+            Frankfurter) · Spot : {snap.source}
+            {snap.source === "Yahoo Finance"
+              ? " (rafraîchi toutes les 60 s)"
+              : ""}{" "}
+            · cotation indicative à usage interne.
           </p>
         </>
       )}
